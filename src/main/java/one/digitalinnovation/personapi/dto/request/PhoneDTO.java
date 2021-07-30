@@ -3,7 +3,6 @@ package one.digitalinnovation.personapi.dto.request;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import one.digitalinnovation.personapi.enums.PhoneType;
 
@@ -24,6 +23,6 @@ public class PhoneDTO {
     private PhoneType type;
 
     @NotEmpty
-    @Size(min = 13, max = 14)
+    @Size(min = 12, max = 14)
     private String number;
 }
