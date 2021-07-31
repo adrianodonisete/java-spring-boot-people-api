@@ -40,36 +40,39 @@ public class PersonService {
     }
 
     public PersonDTO findById(Long id) throws PersonNotFoundException {
-        var person = personRepository.findById(id)
+        Person person = personRepository.findById(id)
                 .orElseThrow(() -> new PersonNotFoundException(id));
 
         return personMapper.toDTO(person);
     }
 
-    public MessageResponseDTO update(Long id, PersonDTO personDTO) throws PersonNotFoundException {
-        personRepository.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
+    public MessageResponseDTO updateByid(Long id, PersonDTO personDTO) throws PersonNotFoundException {
+        verifyIfExists(id);
 
-        Person updatedPerson = personMapper.toModel(personDTO);
-        Person savedPerson = personRepository.save(updatedPerson);
+        Person personUpdate = personMapper.toModel(personDTO);
+        Person updatedPerson = personRepository.save(personUpdate);
 
         MessageResponseDTO messageResponse = createMessageResponse(
-                "Person successfully updated with the ID: ", savedPerson.getId()
+                "Person successfully updated with the ID: ", updatedPerson.getId()
         );
 
         return messageResponse;
     }
 
-    public void delete(Long id) throws PersonNotFoundException {
-        personRepository.findById(id)
-                .orElseThrow(() -> new PersonNotFoundException(id));
+    public void deleteById(Long id) throws PersonNotFoundException {
+        verifyIfExists(id);
 
         personRepository.deleteById(id);
     }
 
-    private MessageResponseDTO createMessageResponse(String s, Long id2) {
+    private MessageResponseDTO createMessageResponse(String message, Long id2) {
         return MessageResponseDTO.builder()
-                .message(s + id2)
+                .message(message + id2)
                 .build();
+    }
+
+    private void verifyIfExists(Long id) throws PersonNotFoundException {
+        personRepository.findById(id)
+                .orElseThrow(() -> new PersonNotFoundException(id));
     }
 }
